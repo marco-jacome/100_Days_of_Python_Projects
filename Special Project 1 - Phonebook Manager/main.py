@@ -1,4 +1,3 @@
-import contact_manager
 from application import UserInterface, Option
 from contact_manager import ContactManager
 

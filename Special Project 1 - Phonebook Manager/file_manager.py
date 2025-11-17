@@ -39,16 +39,13 @@ class FileManager:
             updated_contacts_list.append(updated_contact)
         return updated_contacts_list
 
-
-    def search_file(self, name) -> Contact | None:
+    def list_search_file(self, name:str) -> List[Contact]:
         contacts_list = self.read_contacts_from_file()
+        search_results = []
         for contact in contacts_list:
-            if contact.name == name:
-                return contact
-            else:
-                print(f"Contact Not Found: {name}")
-
-        return None
+            if name.lower() in contact.name.lower() :
+                search_results.append(contact)
+        return search_results
 
     def read_contacts_from_file(self) -> List[Contact]:
         with open(self.contacts_file,'r') as csv_data_file:

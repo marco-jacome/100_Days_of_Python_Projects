@@ -25,58 +25,89 @@ class ContactManager:
     def delete_contact(self):
         # Retrieve contact details from file
         name = input("Enter Name of Contact to Delete: ")
-        contact_details = self.file_manager.search_file(name)
+
+        # Get contact details from file and display contact info
+        search_results = self.file_manager.list_search_file(name)
+
+        if search_results:
+            for index, contact in enumerate(search_results):
+                print(f"{index}. {contact.name}")
+            selected_contact = int(input("Select a Contact to Delete: "))
+        else:
+            print(f"No Contact Found: {name}")
+            return None
 
         # Display contact details
+        contact_details = search_results[selected_contact]
         self.user_interface.display_contact_info(contact_details)
 
         if self.user_interface.confirm_changes():
             # Process request to delete contact, get updated contacts list
             updated_contact_list = self.file_manager.delete_contact_from_file(contact_details)
-
-            # Write updated contacts list to file
-            self.file_manager.write_contacts_to_file(updated_contact_list)
-
+            self.file_manager.write_all_contacts_to_file(updated_contact_list)
+        return None
 
     def update_contact(self):
         # Prompt user for name of contact
         name =  input("Enter Name of Contact to Update: ")
 
         # Get contact details from file and display contact info
-        original_contact_details = self.file_manager.search_file(name)
-        self.user_interface.display_contact_info(original_contact_details)
+        search_results = self.file_manager.list_search_file(name)
+
+        if search_results:
+            for index, contact in enumerate(search_results):
+                print(f"{index}. {contact.name}")
+            selected_contact = int(input("Select a Contact to Update Information: "))
+        else:
+            print(f"No Contact Found: {name}")
+            return None
 
         # Display update options and prompt user update options
         self.user_interface.display_update_options()
-        user_selection = self.user_interface.update_user_input()
+        selected_option = self.user_interface.update_user_input()
 
         # Process update options selected by user
-        updated_contact_details = original_contact_details
+        old_contact_details = search_results[selected_contact]
+        new_contact_details = search_results[selected_contact]
 
         # TODO: Allow user to change more than one field in contact details. Sequentially, step through, and confirm y/n.
-        if user_selection == Update.NAME:
-            updated_contact_details.name = input("Enter New Name: ")
-        if user_selection == Update.PHONE:
-            updated_contact_details.phone = input("Enter New Phone: ")
-        if user_selection == Update.EMAIL:
-            updated_contact_details.email = input("Enter New Email: ")
-        if user_selection == Update.CATEGORY:
-            updated_contact_details.category = input("Enter New Category: ")
+        if selected_option == Update.NAME.value:
+            print(f"Current Name: {old_contact_details.name}")
+            new_contact_details.name = input("Enter New Name: ")
+        elif selected_option == Update.PHONE.value:
+            print(f"Current Phone Number: {old_contact_details.phone}")
+            new_contact_details.phone = input("Enter New Phone: ")
+        elif selected_option == Update.EMAIL.value:
+            print(f"Current Email: {old_contact_details.email}")
+            new_contact_details.email = input("Enter New Email: ")
+        elif selected_option == Update.CATEGORY.value:
+            print(f"Current Category: {old_contact_details.category}")
+            new_contact_details.category = input("Enter New Category: ")
+        else:
+            print("Invalid Update Option Selected.")
 
         # Display updated contact details
-        self.user_interface.display_contact_info(updated_contact_details)
+        self.user_interface.display_contact_info(new_contact_details)
 
         # Prompt user to confirm contact details are correct.
         if self.user_interface.confirm_changes():
-            updated_contacts_list = self.file_manager.update_contact_file(original_contact_details, updated_contact_details)
-            self.file_manager.write_contacts_to_file(updated_contacts_list)
+            updated_contacts_list = self.file_manager.update_contact_file(old_contact_details, new_contact_details)
+            self.file_manager.write_all_contacts_to_file(updated_contacts_list)
+        return None
 
 
     def search_contact(self):
         name = input("Enter Name of Contact to Search: ")
-        contact_details = self.file_manager.search_file(name)
-        self.user_interface.display_contact_info(contact_details)
+        search_results = self.file_manager.list_search_file(name)
 
+        if search_results:
+            for index, contact in enumerate(search_results):
+                print(f"{index}. {contact.name}")
+            select = int(input("Select a Contact to Display Information: "))
+            self.user_interface.display_contact_info(search_results[select])
+        else:
+            print(f"No Contact Found: {name}")
+        return None
 
     def add_contact(self):
 
@@ -95,9 +126,6 @@ class ContactManager:
 
         # Prompt user to confirm contact details are correct.
         if self.user_interface.confirm_changes():
-            #contacts_list = self.file_manager.read_contacts_from_file()
-            #contacts_list.append(new_contact)
-            #sorted_contacts_list = self.file_manager.sort_contacts_file(contacts_list)
-            self.file_manager.write_contact_to_file(new_contact)
+            self.file_manager.append_contact_to_file(new_contact)
 
         return None
