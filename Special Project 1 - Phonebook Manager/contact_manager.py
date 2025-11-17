@@ -95,9 +95,9 @@ class ContactManager:
 
         # Prompt user to confirm contact details are correct.
         if self.user_interface.confirm_changes():
-            contacts_list = self.file_manager.read_contacts_from_file()
-            contacts_list.append(new_contact)
-            sorted_contacts_list = self.file_manager.sort_contacts_file(contacts_list)
-            self.file_manager.write_contacts_to_file(sorted_contacts_list)
+            #contacts_list = self.file_manager.read_contacts_from_file()
+            #contacts_list.append(new_contact)
+            #sorted_contacts_list = self.file_manager.sort_contacts_file(contacts_list)
+            self.file_manager.write_contact_to_file(new_contact)
 
         return None

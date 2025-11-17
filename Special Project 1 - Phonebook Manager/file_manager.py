@@ -40,14 +40,15 @@ class FileManager:
         return updated_contacts_list
 
 
-    def search_file(self, name) -> Contact:
+    def search_file(self, name) -> Contact | None:
         contacts_list = self.read_contacts_from_file()
         for contact in contacts_list:
             if contact.name == name:
                 return contact
             else:
                 print(f"Contact Not Found: {name}")
-                return None
+
+        return None
 
     def read_contacts_from_file(self) -> List[Contact]:
         with open(self.contacts_file,'r') as csv_data_file:
@@ -67,11 +68,17 @@ class FileManager:
                 self.contacts_list.append(contact)
         return self.contacts_list
 
-    def write_contacts_to_file(self, contact:List[Contact]):
+    def write_all_contacts_to_file(self, contact:List[Contact]):
         with open(self.contacts_file,'w') as csv_data_file:
-            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None )
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
             for c in contact:
                 writer.writerow([c.name, c.phone, c.email, c.category])
+
+    def append_contact_to_file(self, contact:Contact):
+        contact_fields = [contact.name, contact.phone, contact.email, contact.category]
+        with open(self.contacts_file,'a') as csv_data_file:
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
+            writer.writerow(contact_fields)
 
     def get_file_dialect_info(self):
         file_size = os.path.getsize(self.contacts_file)
