@@ -1,5 +1,4 @@
 from contact import Contact
-
 from enum import Enum
 
 class Option(Enum):
@@ -13,35 +12,25 @@ class Option(Enum):
 class UserInterface:
 
     def confirm_changes(self) -> bool:
-        user_confirm = input("Confirm changes (y/n): ").lower()
-        if user_confirm == "y":
+        user_confirm = input("Confirm changes (y/n): ")
+        if user_confirm.lower() == "y":
             return True
         else:
             print("No changes were applied.")
             return False
 
     def menu_user_input(self) -> int:
-        invalid_input = True
         user_input = int(input())
-
-        while invalid_input:
-            if user_input < 1 or user_input > 5:
-                print("Invalid input. Please enter a number between 1 and 5.")
-            else:
-                invalid_input = False
-
+        while user_input < 1 or user_input > 5:
+            print("Invalid input. Please enter a number between 1 and 5.")
+            user_input = int(input())
         return user_input
 
     def update_user_input(self) -> int:
-        invalid_input = True
         user_input = int(input())
-
-        while invalid_input:
-            if user_input < 1 or user_input > 4:
-                print("Invalid input. Please enter a number between 1 and 4.")
-            else:
-                invalid_input = False
-
+        while user_input < 1 or user_input > 4:
+            print("Invalid input. Please enter a number between 1 and 4.")
+            user_input = int(input())
         return user_input
 
     def display_update_options(self):

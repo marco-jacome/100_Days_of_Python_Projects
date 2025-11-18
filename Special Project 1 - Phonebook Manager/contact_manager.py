@@ -2,6 +2,7 @@ from contact import Contact
 from file_manager import FileManager
 from application import UserInterface
 from enum import Enum
+from typing import List
 
 class Update(Enum):
     NAME = 1
@@ -22,27 +23,32 @@ class ContactManager:
     def validate_contact_details(self, name, phone, email, category):
         pass
 
+    def match_results(self, search_results: List[Contact])-> bool:
+        if not search_results:
+            return False
+        for index, contact in enumerate(search_results):
+            print(f"{index}. {contact.name}")
+        return True
+
     def delete_contact(self):
-        # Retrieve contact details from file
         name = input("Enter Name of Contact to Delete: ")
 
-        # Get contact details from file and display contact info
-        search_results = self.file_manager.list_search_file(name)
-
-        if search_results:
-            for index, contact in enumerate(search_results):
-                print(f"{index}. {contact.name}")
-            selected_contact = int(input("Select a Contact to Delete: "))
-        else:
-            print(f"No Contact Found: {name}")
+        # Get contacts from file and display match results
+        search_results = self.file_manager.search_file(name)
+        match_results = self.match_results(search_results)
+        if not match_results:
+            print("No matching contacts found.")
             return None
+
+        # Prompt user to select contact from results
+        selected_contact = int(input("Select a Contact to Delete: "))
 
         # Display contact details
         contact_details = search_results[selected_contact]
         self.user_interface.display_contact_info(contact_details)
 
+        # Process request to delete contact, get updated contacts list
         if self.user_interface.confirm_changes():
-            # Process request to delete contact, get updated contacts list
             updated_contact_list = self.file_manager.delete_contact_from_file(contact_details)
             self.file_manager.write_all_contacts_to_file(updated_contact_list)
         return None
@@ -52,21 +58,20 @@ class ContactManager:
         name =  input("Enter Name of Contact to Update: ")
 
         # Get contact details from file and display contact info
-        search_results = self.file_manager.list_search_file(name)
-
-        if search_results:
-            for index, contact in enumerate(search_results):
-                print(f"{index}. {contact.name}")
-            selected_contact = int(input("Select a Contact to Update Information: "))
-        else:
-            print(f"No Contact Found: {name}")
+        search_results = self.file_manager.search_file(name)
+        match_results = self.match_results(search_results)
+        if not match_results:
+            print("No matching contacts found.")
             return None
+
+        # Prompt user to select contact from results
+        selected_contact = int(input("Select a Contact to Update Information: "))
 
         # Display update options and prompt user update options
         self.user_interface.display_update_options()
         selected_option = self.user_interface.update_user_input()
 
-        # Process update options selected by user
+        # Process update option selected by user
         old_contact_details = search_results[selected_contact]
         new_contact_details = search_results[selected_contact]
 
@@ -83,8 +88,6 @@ class ContactManager:
         elif selected_option == Update.CATEGORY.value:
             print(f"Current Category: {old_contact_details.category}")
             new_contact_details.category = input("Enter New Category: ")
-        else:
-            print("Invalid Update Option Selected.")
 
         # Display updated contact details
         self.user_interface.display_contact_info(new_contact_details)
@@ -98,15 +101,13 @@ class ContactManager:
 
     def search_contact(self):
         name = input("Enter Name of Contact to Search: ")
-        search_results = self.file_manager.list_search_file(name)
-
-        if search_results:
-            for index, contact in enumerate(search_results):
-                print(f"{index}. {contact.name}")
+        search_results = self.file_manager.search_file(name)
+        match_results = self.match_results(search_results)
+        if not match_results:
+            print("No matching contacts found.")
+        else:
             select = int(input("Select a Contact to Display Information: "))
             self.user_interface.display_contact_info(search_results[select])
-        else:
-            print(f"No Contact Found: {name}")
         return None
 
     def add_contact(self):

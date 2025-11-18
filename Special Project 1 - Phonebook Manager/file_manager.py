@@ -27,19 +27,19 @@ class FileManager:
     def update_contact_file(self, original_contact: Contact, updated_contact: Contact)->List[Contact]:
         current_contacts_list = self.read_contacts_from_file()
         updated_contacts_list = current_contacts_list.copy()
-        if not current_contacts_list:                                       # Contacts list is not empty
-            for index, contact in enumerate(current_contacts_list):
-                if contact == original_contact:
-                    contact.name = updated_contact.name                     # Update contact information
-                    contact.phone = updated_contact.phone
-                    contact.email = updated_contact.email
-                    contact.category = updated_contact.category
-                    updated_contacts_list[index] = contact                  # Update contact list; Replace original contact
-        else:
-            updated_contacts_list.append(updated_contact)
+
+        for index, contact in enumerate(current_contacts_list):
+            if contact == original_contact:
+                contact.name = updated_contact.name                     # Update contact information
+                contact.phone = updated_contact.phone
+                contact.email = updated_contact.email
+                contact.category = updated_contact.category
+                updated_contacts_list[index] = contact                  # Update contact list; Replace original contact
+                break
+
         return updated_contacts_list
 
-    def list_search_file(self, name:str) -> List[Contact]:
+    def search_file(self, name:str) -> List[Contact]:
         contacts_list = self.read_contacts_from_file()
         search_results = []
         for contact in contacts_list:
@@ -48,6 +48,7 @@ class FileManager:
         return search_results
 
     def read_contacts_from_file(self) -> List[Contact]:
+        self.contacts_list.clear()  # clear contacts list before reading file
         with open(self.contacts_file,'r') as csv_data_file:
             contact_info = csv.reader(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None)
             for contact_data_fields in contact_info:
@@ -67,14 +68,14 @@ class FileManager:
 
     def write_all_contacts_to_file(self, contact:List[Contact]):
         with open(self.contacts_file,'w') as csv_data_file:
-            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None )
             for c in contact:
                 writer.writerow([c.name, c.phone, c.email, c.category])
 
     def append_contact_to_file(self, contact:Contact):
         contact_fields = [contact.name, contact.phone, contact.email, contact.category]
         with open(self.contacts_file,'a') as csv_data_file:
-            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None )
             writer.writerow(contact_fields)
 
     def get_file_dialect_info(self):
