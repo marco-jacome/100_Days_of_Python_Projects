@@ -16,12 +16,11 @@ class FileManager:
 
     def delete_contact_from_file(self, delete_contact:Contact)->List[Contact]:
         current_contacts_list = self.read_contacts_from_file()
-        if not current_contacts_list:  # Contacts list is not empty
-            for index, contact in enumerate(current_contacts_list):
-                if contact == delete_contact:
-                    current_contacts_list.remove(contact)  # Update contact list
-        else:
-            print(f"Contact not found: {delete_contact.name}")
+        for index, contact in enumerate(current_contacts_list):
+            if contact.name == delete_contact.name:
+                current_contacts_list.remove(contact)  # Modify contact list
+                print(contact.name)
+                print(delete_contact.name)
         return current_contacts_list
 
     def update_contact_file(self, original_contact: Contact, updated_contact: Contact)->List[Contact]:
