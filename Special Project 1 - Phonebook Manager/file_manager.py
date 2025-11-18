@@ -5,9 +5,9 @@ import os
 
 class FileManager:
 
-    # Class attributes
-    contacts_file = "data.csv"      # Contacts data file
-    contacts_list = []              # stored contacts (OBJECTS) read from file
+    def __init__(self):
+        self.contacts_file = "data.csv"      # Contacts data file
+        self.contacts_list = []              # stored contacts (OBJECTS) read from file
 
     @staticmethod
     def sort_contacts_file(contact_list:List[Contact])->List[Contact]:
@@ -19,8 +19,7 @@ class FileManager:
         for index, contact in enumerate(current_contacts_list):
             if contact.name == delete_contact.name:
                 current_contacts_list.remove(contact)  # Modify contact list
-                print(contact.name)
-                print(delete_contact.name)
+                break
         return current_contacts_list
 
     def update_contact_file(self, original_contact: Contact, updated_contact: Contact)->List[Contact]:
@@ -49,7 +48,7 @@ class FileManager:
     def read_contacts_from_file(self) -> List[Contact]:
         self.contacts_list.clear()  # clear contacts list before reading file
         with open(self.contacts_file,'r') as csv_data_file:
-            contact_info = csv.reader(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None)
+            contact_info = csv.reader(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None)
             for contact_data_fields in contact_info:
 
                 # store contact data fields
@@ -67,14 +66,14 @@ class FileManager:
 
     def write_all_contacts_to_file(self, contact:List[Contact]):
         with open(self.contacts_file,'w') as csv_data_file:
-            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None )
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
             for c in contact:
                 writer.writerow([c.name, c.phone, c.email, c.category])
 
     def append_contact_to_file(self, contact:Contact):
         contact_fields = [contact.name, contact.phone, contact.email, contact.category]
         with open(self.contacts_file,'a') as csv_data_file:
-            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\r\n',escapechar= None )
+            writer = csv.writer(csv_data_file, delimiter=',', lineterminator= '\n',escapechar= None )
             writer.writerow(contact_fields)
 
     def get_file_dialect_info(self):
