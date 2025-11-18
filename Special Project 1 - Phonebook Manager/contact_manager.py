@@ -16,12 +16,17 @@ class ContactManager:
         self.file_manager = FileManager()
         self.user_interface = UserInterface()
 
-    # TODO: Format contact information before creating, modifying contact object.
-    def format_contact_details(self, name, phone, email, category):
-        pass
 
-    def validate_contact_details(self, name, phone, email, category):
-        pass
+    # TODO: Format contact information before creating, modifying contact object.
+    def format_contact_details(self, contact: Contact):
+        # Capitalize each first and last name
+        contact.name = contact.name.title()
+        # Remove spaces from phone number
+        contact.phone = contact.phone.replace(' ', '-')
+        # Lowercase email with no spaces
+        contact.email = contact.email.lower().strip()
+        # lower case category
+        contact.category = contact.category.lower()
 
     def match_results(self, search_results: List[Contact])-> bool:
         if not search_results:
@@ -73,9 +78,15 @@ class ContactManager:
 
         # Process update option selected by user
         old_contact_details = search_results[selected_contact]
-        new_contact_details = search_results[selected_contact]
 
-        # TODO: Allow user to change more than one field in contact details. Sequentially, step through, and confirm y/n.
+        # Create new instance of contact object, independent of the original.
+        new_contact_details = Contact(
+            old_contact_details.name,
+            old_contact_details.phone,
+            old_contact_details.email,
+            old_contact_details.category
+        )
+
         if selected_option == Update.NAME.value:
             print(f"Current Name: {old_contact_details.name}")
             new_contact_details.name = input("Enter New Name: ")
@@ -90,6 +101,7 @@ class ContactManager:
             new_contact_details.category = input("Enter New Category: ")
 
         # Display updated contact details
+        self.format_contact_details(new_contact_details)
         self.user_interface.display_contact_info(new_contact_details)
 
         # Prompt user to confirm contact details are correct.
@@ -123,10 +135,9 @@ class ContactManager:
         new_contact = Contact(name, phone, email, category)
 
         # Display new contact info to user
+        self.format_contact_details(new_contact)
         self.user_interface.display_contact_info(new_contact)
 
         # Prompt user to confirm contact details are correct.
         if self.user_interface.confirm_changes():
             self.file_manager.append_contact_to_file(new_contact)
-
-        return None

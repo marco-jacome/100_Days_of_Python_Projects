@@ -29,7 +29,7 @@ class FileManager:
         updated_contacts_list = current_contacts_list.copy()
 
         for index, contact in enumerate(current_contacts_list):
-            if contact == original_contact:
+            if contact.name == original_contact.name:
                 contact.name = updated_contact.name                     # Update contact information
                 contact.phone = updated_contact.phone
                 contact.email = updated_contact.email
